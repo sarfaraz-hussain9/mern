@@ -33,7 +33,7 @@ const signIn=async(req,res,next)=>{
             return next(errorHandler())
         }
         const token=jwt.sign({id:validUser._id},process.env.JWT,{expiresIn:'30d'});
-        res.cookie("Token",token,{httpOnly:true,secure:true,sameSite:"strict", maxAge:30*24*60*60*100 });
+        res.cookie("Token",token,{httpOnly:true,secure:process.env.DEV!=="devlopment",sameSite:"strict", maxAge:30*24*60*60*100 });
         const{password:hashedPassword,...rest}=validUser._doc;
         res.status(200).json({rest})
 
@@ -59,8 +59,26 @@ const profile=async(req,res,next)=>{
 
 // updateprofile put private
 const updateProfile=async(req,res,next)=>{
+const user=await User.findById(req.user._id);
+if(user){
+    user.username=req.body.username || user.username;
+    user.email=req.body.email || user.email;
+    if(req.body.password){
+        user.password=req.body.password;
+        const hashPass=bcrypt.hashSync(user.password,10);
+        user.password=hashPass;
+    }
+    const updateUser =await user.save();
+    const {password:hashPass,...rest}=updateUser._doc;
+    res.status(200).json(rest);
+}
+else{
+    res.status(404);
+    throw new Error("user not found");
+}
 
 }
+
 
 
 export {

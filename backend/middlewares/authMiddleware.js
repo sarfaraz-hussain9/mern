@@ -9,7 +9,6 @@ const protect=async(req,res,next)=>{
             req.user=await User.findById(decoded.id);
             next();
         }
-        res.status(404).json({message:"signin first"});
     } catch (error) {
         next(error);
     }
