@@ -50,7 +50,11 @@ const logOut=async(req,res,next)=>{
 
 // profile get private
 const profile=async(req,res,next)=>{
-
+    const user={
+        username:req.user.username,
+        email:req.user.email
+    }
+    res.status(200).json(user);
 }
 
 // updateprofile put private
