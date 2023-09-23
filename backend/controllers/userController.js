@@ -44,7 +44,8 @@ const signIn=async(req,res,next)=>{
 
 // logout post public
 const logOut=async(req,res,next)=>{
-
+    res.cookie("Token","",{httpOnly:true,expires:new Date(0)});
+    res.status(200).json({message:"user logout successfully"})
 }
 
 // profile get private
