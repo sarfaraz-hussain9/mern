@@ -37,8 +37,8 @@ const signIn=async(req,res,next)=>{
         const{password:hashedPassword,...rest}=validUser._doc;
         res.status(200).json({rest})
 
-    } catch (error) {
-        next(error)
+    } catch (err) {
+        next(err)
     }
 }
 
