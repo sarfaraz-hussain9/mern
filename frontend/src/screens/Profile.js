@@ -1,6 +1,25 @@
 import React from 'react'
+import { useLogoutMutation } from '../redux/slices/userApiSlice';
+import { signOut } from '../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
+import { useNavigate} from "react-router-dom"
 
 const Profile = () => {
+  const dispatch=useDispatch();
+  const navigate=useNavigate();
+
+  const [logoutApiCall]=useLogoutMutation();
+
+  const logoutHandler=async ()=>{
+    try {
+      await logoutApiCall().unwrap();
+      dispatch(signOut())
+      navigate("/")
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <>
     <div className="container w-96 h-[500px] mx-auto bg-slate-200 mt-5 p-4 rounded-xl shadow-lg ">
@@ -13,7 +32,7 @@ const Profile = () => {
         <button className=' text-white bg-blue-600 w-full p-1 text-center  rounded-md shadow-md my-3'>Update Profile</button>
         <div className="btn flex gap-[140px] mt-20"> 
         <button className='bg-red-600 px-3 rounded-md text-white'>Delete Account</button>
-        <button className='bg-slate-400 text-white rounded-md px-3'>LogOut </button>
+        <button onClick={logoutHandler} className='bg-slate-400 text-white rounded-md px-3'>LogOut </button>
         </div>
 </div>
 </div>
