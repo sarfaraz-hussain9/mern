@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import {useSelector } from "react-redux";
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -14,19 +14,22 @@ const Header = () => {
         </div>
         <div className="right mx-52">
           <ul className="flex gap-7">
+          <li >
+                  <NavLink to="/">HOME</NavLink>
+                </li>
             {userInfo ? (
               <>
               <li >
-                  <NavLink to="/profile">{userInfo.rest.username}</NavLink>
+                  <NavLink to="/profile"><img className="w-7 h-7 rounded-full object-cover" src={userInfo.profilePhoto} alt="profile"/></NavLink>
                 </li>
               </>
             ) : (
               <>
                 <li>
-                  <NavLink to="/signup">Sign Up</NavLink>
+                  <NavLink to="/signup">SIGN UP</NavLink>
                 </li>
                 <li>
-                  <NavLink to="/signin">Sign In</NavLink>
+                  <NavLink to="/signin">SIGN IN</NavLink>
                 </li>
               </>
             )}

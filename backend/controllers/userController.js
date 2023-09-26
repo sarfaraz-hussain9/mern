@@ -6,16 +6,30 @@ import errorHandler from "../middlewares/errorHandler.js"
 // signup post public
 const signUp=async(req,res,next)=>{
     const {username,email,password}=req.body;
-    const hashedPassword=bcrypt.hashSync(password,10);
-    const newUser=new User({username,email,password:hashedPassword});
-    try {
-        await newUser.save();
-        res.status(200).json({
-            message:"user created successfully"
+    
+    const userExist=await User.findOne({email})
+
+    if(userExist){
+        res.status(400)
+        throw new Error("User already Exist")
+    }
+
+    const user=await User.create({
+        username,
+        email,
+        password,
+    })
+
+    if(user){
+        res.status(201).json({
+            _id:user._id,
+            username:user.username,
+            email:user.email,
+            profilePhoto:user.profilePhoto,
         })
-        
-    } catch (error) {
-        next(error);
+    }else{
+        res.status(400)
+        throw new Error("Invalid User Data")
     }
 }
 
@@ -34,8 +48,12 @@ const signIn=async(req,res,next)=>{
         }
         const token=jwt.sign({id:validUser._id},process.env.JWT,{expiresIn:'30d'});
         res.cookie("Token",token,{httpOnly:true,secure:process.env.DEV!=="devlopment",sameSite:"strict", maxAge:30*24*60*60*100 });
-        const{password:hashedPassword,...rest}=validUser._doc;
-        res.status(200).json({rest})
+        res.status(200).json({
+            _id: validUser._id,
+            username: validUser.username,
+            email: validUser.email,
+            profilePhoto: validUser.profilePhoto,
+        })
 
     } catch (err) {
         next(err)
@@ -50,33 +68,47 @@ const logOut=async(req,res,next)=>{
 
 // profile get private
 const profile=async(req,res,next)=>{
-    const user={
-        username:req.user.username,
-        email:req.user.email
-    }
-    res.status(200).json(user);
+    res.status(200).json("profile");
 }
 
 // updateprofile put private
 const updateProfile=async(req,res,next)=>{
-const user=await User.findById(req.user._id);
-if(user){
-    user.username=req.body.username || user.username;
-    user.email=req.body.email || user.email;
-    if(req.body.password){
-        user.password=req.body.password;
-        const hashPass=bcrypt.hashSync(user.password,10);
-        user.password=hashPass;
+    const user=await User.findById(req.user._id);
+    if(user){
+        user.username=req.body.username || user.username;
+        user.email=req.body.email || user.email;
+        if(req.body.password){
+            user.password=req.body.password;
+        }
+        const updateUser=await user.save()
+        res.status(200).json({
+            _id: updateUser._id,
+            username: updateUser.username,
+            email: updateUser.email,
+    
+        });
     }
-    const updateUser =await user.save();
-    const {password:hashPass,...rest}=updateUser._doc;
-    res.status(200).json(rest);
-}
-else{
-    res.status(404);
-    throw new Error("user not found");
-}
+    else{
+        res.status(404);
+        throw new Error("user not found");
+    }
+    
+    }
 
+// delete user Account
+
+const deleteUser=async(req,res,next)=>{
+    const {email}=req.body
+    if(!email){
+        res.status(500)
+        throw new Error("You can only delete your account")
+    }
+    try {
+        await User.deleteOne({email})
+        res.status(200).json({message:"user deleted successfully"})
+    } catch (error) {
+        next(error)
+    }
 }
 
 
@@ -86,5 +118,6 @@ export {
     signIn,
     logOut,
     profile,
-    updateProfile
+    updateProfile,
+    deleteUser
 }

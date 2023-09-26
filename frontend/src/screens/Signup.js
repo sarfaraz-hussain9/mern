@@ -1,51 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react'
 import { Link,useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSignupMutation } from '../redux/slices/userApiSlice.js';
+import { signIn } from '../redux/slices/authSlice.js';
+import {toast} from "react-toastify"
+
 
 const Signup = () => {
 
     const navigate=useNavigate();
-    const [formDate,setFormDate]=useState({});
-    const [error,setError]=useState(false);
+    const dispatch=useDispatch();
+    const {userInfo}=useSelector((state)=> state.auth)
 
-    const handleChange=(e)=>{
-        setFormDate({...formDate,[e.target.id]:e.target.value});
+   const [username,setUsername]=useState('')
+   const [email,setEmail]=useState('')
+   const [password,setPassword]=useState('')
+
+   const [signup,{isLoading}]=useSignupMutation()
+
+   
+   useEffect(()=>{
+    if(userInfo){
+      navigate("/")
     }
-
+  },[navigate,userInfo]);
+  
     const handleSubmit=async (e)=>{
         e.preventDefault();
         try {
-            setError(false);
-
-            const res=await fetch('/api/auth/signup',{
-                method:'POST',
-                headers:{
-                  'Content-Type':'application/json'
-                },
-                body:JSON.stringify(formDate),
-              });
-        
-              const data =await res.json();
-              if(data.success==="false"){
-                setError(true);
-              }
-              navigate("/signin");
-              
-        } catch (error) {
-            setError(true);
-        }
-    }
+          const res=await signup({username,email,password}).unwrap();
+          dispatch(signIn({...res}))
+          toast.success("User Login Successfully")
+          navigate("/")
+         } catch (err) {
+          toast.error('Something Went Wrong')
+         }
+      }
+    
   return (
     <>
-        <div className="container w-60 h-80 mx-auto bg-slate-200 mt-5 p-3 rounded-xl shadow-md ">
-            <h1 className='text-center font-bold text-xl mb-5'>Sign Up</h1>
+        <div className="container w-60 mx-auto bg-slate-200 mt-5 p-3 rounded-xl shadow-md ">
+            <h1 className='text-center font-bold text-xl mb-5'>SIGN UP</h1>
             <form className='flex flex-col' onSubmit={handleSubmit}>
-            <input onChange={handleChange} className=" focus:outline-none my-2 p-1 rounded-md" type="text" placeholder='username' id='username'/>
-            <input onChange={handleChange} className=" focus:outline-none my-2 p-1 rounded-md" type="text" placeholder='email' id='email'/>
-            <input onChange={handleChange} className=" focus:outline-none my-2 p-1 rounded-md" type="password" placeholder='password' id='password'/>
-            <button type='submit' className='my-2 bg-blue-600 w-full rounded-md text-white p-1'>Sign Up</button>
+            <input onChange={(e)=>{setUsername(e.target.value)}} className=" focus:outline-none my-2  p-1 rounded-md" type="text" placeholder='Username' id='username'/>
+            <input onChange={(e)=>{setEmail(e.target.value)}} className=" focus:outline-none my-2  p-1 rounded-md" type="text" placeholder='Email' id='email'/>
+            <input onChange={(e)=>{setPassword(e.target.value)}} className=" focus:outline-none my-2  p-1 rounded-md" type="password" placeholder='Password' id='password'/>
+            <button type='submit' className='mt-2 bg-blue-600 w-full rounded-lg text-white p-1'>SIGN UP</button>
             </form>
             <p className=''>Have an Account? <span className='text-blue-600 font-medium'><Link to="/signin">Sign In</Link></span></p>
-            <p className="text-red-600">{error&&"something went wrong"}</p>
         </div>
     </>
   )
