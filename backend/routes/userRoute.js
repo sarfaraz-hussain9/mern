@@ -6,7 +6,7 @@ const router=express.Router();
 
 router.post("/signup",signUp);
 router.post("/signin",signIn);
-router.route("/profile").get(protect ,profile).put( protect ,updateProfile );
+router.route("/profile").put( protect ,updateProfile );
 router.post("/logout",logOut);
 router.delete("/delete",protect,deleteUser)
 

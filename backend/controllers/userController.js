@@ -46,8 +46,10 @@ const signIn=async(req,res,next)=>{
         if(!validPassword){
             return next(errorHandler())
         }
-        const token=jwt.sign({id:validUser._id},process.env.JWT,{expiresIn:'30d'});
-        res.cookie("Token",token,{httpOnly:true,secure:process.env.DEV!=="devlopment",sameSite:"strict", maxAge:30*24*60*60*100 });
+
+        const token=jwt.sign({_id:validUser._id},process.env.JWT,{expiresIn:'30d'});
+        res.cookie("Token",token,{httpOnly:true,secure:process.env.NODE_ENV!=="devlopment",sameSite:"strict", maxAge:30*24*60*60*100 });
+
         res.status(200).json({
             _id: validUser._id,
             username: validUser.username,
@@ -85,7 +87,7 @@ const updateProfile=async(req,res,next)=>{
             _id: updateUser._id,
             username: updateUser.username,
             email: updateUser.email,
-    
+            profilePhoto:updateUser.profilePhoto,
         });
     }
     else{
