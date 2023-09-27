@@ -21,6 +21,9 @@ const signUp=async(req,res,next)=>{
     })
 
     if(user){
+        
+        const token=jwt.sign({_id:user._id},process.env.JWT,{expiresIn:'30d'});
+        res.cookie("Token",token,{httpOnly:true,secure:process.env.NODE_ENV!=="devlopment",sameSite:"strict", maxAge:30*24*60*60*100 });
         res.status(201).json({
             _id:user._id,
             username:user.username,
