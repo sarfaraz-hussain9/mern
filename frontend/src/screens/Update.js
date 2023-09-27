@@ -33,7 +33,6 @@ const Update = () => {
        }else{
         try {
             const res=await updateProfile({
-                _id:userInfo._id,
                 username,
                 email,
                 password,
