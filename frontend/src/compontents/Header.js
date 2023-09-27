@@ -6,14 +6,14 @@ const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
   return (
     <>
-      <div className="navBar flex justify-between h-10 bg-slate-900 text-white items-center shadow">
-        <div className="left mx-20">
+      <div className="navBar flex justify-around h-10 w-full bg-slate-900 text-white items-center shadow ">
+        <div className=" ">
           <h3 className="text-emerald-700  font-bold font-mono text-xl ">
             MERN APP
           </h3>
         </div>
-        <div className="right mx-52">
-          <ul className="flex gap-7">
+        <div className="">
+          <ul className="flex gap-3 sm:gap-6">
           <li >
                   <NavLink to="/">HOME</NavLink>
                 </li>

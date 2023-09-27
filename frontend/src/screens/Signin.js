@@ -39,7 +39,7 @@ const Signin = () => {
 
   return (
     <>
-        <div className="container w-64 mx-auto bg-slate-200 mt-5 p-3 rounded-xl shadow-md ">
+        <div className="container w-96 mx-auto bg-slate-200  p-5 my-40 rounded-xl shadow-md  ">
             <h1 className='text-center uppercase font-bold text-xl mb-5'>Sign In</h1>
             <form className='flex flex-col' onSubmit={handleSubmit} >
             <input onChange={(e)=>{setEmail(e.target.value)}} className=" focus:outline-none  my-2 p-1 rounded-md" type="text" placeholder='Email' value={email}/>

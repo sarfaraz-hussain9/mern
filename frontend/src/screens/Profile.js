@@ -49,7 +49,7 @@ const Profile = () => {
 
   return (
     <>
-    <div className="container w-96  mx-auto bg-slate-200 mt-5 p-4 rounded-xl shadow-lg ">
+    <div className="container w-96 mx-auto bg-slate-200  p-5 my-40 rounded-xl shadow-md ">
     <h1 className='text-center font-bold  mb-5 text-4xl'>Profile</h1>
     <div className="box flex flex-col justify-center items-center ">
 
