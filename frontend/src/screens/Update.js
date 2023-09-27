@@ -17,9 +17,11 @@ const Update = () => {
     const [password,setPassword]=useState('')
     const [confirmPassword,setConfirmPassword]=useState('')
 
+    // eslint-disable-next-line
     const [updateProfile,{isLoading}]=useUpdateMutation();
 
     useEffect(()=>{
+        // eslint-disable-next-line
        setUsername(userInfo.username);
        setEmail(userInfo.email)
       },[userInfo.setUsername,userInfo.setEmail]);
